@@ -1,0 +1,23 @@
+Package: simgenphen
+Title: Simulate Genotypes and Phenotypes
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Alejandro",
+	   family = "Ochoa",
+	   role = c("aut", "cre"),
+	   email = "alejandro.ochoa@duke.edu",
+           comment = c(ORCID = "0000-0003-4928-3403"))
+Description: A wrapper around several more specialized packages: `bnpsd` for admixture, `simfam` for family structure, and `simtrait` for complex traits.  This package assumes reasonable defaults and generally saves on typing for some recurrent cases.  Key non-trivial functionality is drawing genotypes for admixed families whose loci are all polymorphic.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports:
+    bnpsd,
+    simfam,
+    simtrait,
+    genio,
+    tibble
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
