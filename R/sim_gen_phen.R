@@ -1,3 +1,50 @@
+#' Simulate genotypes and phenotypes
+#'
+#' Simulate entire parameters and random variables, particularly random genotypes and phenotypes, with desired dimensions and other base parameters.
+#'
+#' @param n_ind The number of individuals.
+#' @param m_loci The number of loci.
+#' @param k_subpops The number of intermediate subpopulations for admixture model.
+#' @param fst The FST of the admixed individuals (for the founders if `G > 1`).
+#' @param bias_coeff The bias coefficient of the admixed individuals (for the founders if `G > 1`).
+#' @param G The number of generations for random family.
+#' The `G = 1` case is no family structure (just admixture).
+#' For `G > 1` first admixed founders are simulated, then the family structure is simulated from them.
+#' @param m_causal The number of causal loci for the trait, selected randomly from among the simulated loci.
+#' @param herit The trait heritability.
+#' @param env A string describing environment model.
+#' Only `NA` (no environment) or "gcta" are accepted.
+#' @param env_var The variance of the environment effect.
+#' Ignored if `env` is `NA`.
+#' @param fes If `FALSE` (default) constructs trait from Random Coefficients (RC) model.
+#' If `TRUE`, the Fixed Effect Sizes (FES) model is used instead.
+#' @param n_chr Number of chromosomes to simulate.
+#' Chromosome assignments are not biologically meaningful, as all loci are drawn independently (no LD).
+#' @param verbose If `TRUE` reports progress, otherwise it is silent.
+#'
+#' @return A list containing the following elements:
+#' - `X`: The simulated genotype matrix.
+#' - `bim`: The variant info table.
+#' - `kinship`: The true kinship of the joint admixed family model (final generation only).
+#' - `admix_proportions`: The true admixture proportions of the joint admixed family model (final generation only).
+#' - `trait`: The simulated trait vector.
+#' - `causal_indexes`: The vector of randomly selected causal loci indexes.
+#' - `causal_coeffs`: The vector of simulated regression coefficients for causal loci.
+#'
+#' @examples
+#' # run with default values, except smaller
+#' data <- sim_gen_phen( n_ind = 50, G = 3, m_loci = 100, m_causal = 5 )
+#'
+#' # main objects of interest:
+#' # genotype matrix
+#' data$X
+#' # trait vector
+#' data$trait
+#'
+#' @seealso
+#' This function is a wrapper around [sim_pop()], [sim_geno()], [sim_bim()], and [sim_trait_env()], see those for more details.
+#'
+#' @export
 sim_gen_phen <- function(
                          # params of population structure
                          n_ind = 1000, # number of individuals (columns)
@@ -35,6 +82,7 @@ sim_gen_phen <- function(
         G = G,
         verbose = verbose
     )
+    admix_proportions_1 <- obj$admix_proportions_1
     admix_proportions <- obj$admix_proportions
     inbr_subpops <- obj$inbr_subpops
     fam <- obj$fam
@@ -46,7 +94,7 @@ sim_gen_phen <- function(
     ####################
 
     obj <- sim_geno(
-        admix_proportions = admix_proportions,
+        admix_proportions_1 = admix_proportions_1,
         inbr_subpops = inbr_subpops,
         fam = fam,
         ids = ids,
@@ -87,15 +135,14 @@ sim_gen_phen <- function(
 
     # return a few items of interest
     # NOTES:
-    # - we never use coancestry outside, only kinship
     # - inbr_subpops, p_anc also not used outside
     # - could return fam/ids, don't right now
     return(
         list(
             X = X, # genotype matrix
             bim = bim,
-            kinship = kinship, # kinship matrix
-            admix_proportions = admix_proportions, # admixture proportions
+            kinship = kinship, # kinship matrix of last generation (founders if G=1)
+            admix_proportions = admix_proportions, # admixture proportions of last generation (founders if G=1)
             trait = trait, # trait vector
             causal_indexes = causal_indexes, # randomly-picked causal locus index
             causal_coeffs = causal_coeffs # locus effect size vector (for causal loci only, rest are zero)

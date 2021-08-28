@@ -24,10 +24,10 @@ check_admix_prop <- function( admix, n_ind, k_subpops ) {
 check_sim_pop_data <- function ( data, n_ind, k_subpops, fst, G ) {
     # check overall object
     expect_true( is.list( data ) )
-    expect_equal( names( data ), c('admix_proportions', 'inbr_subpops', 'fam', 'ids', 'kinship') )
+    expect_equal( names( data ), c('admix_proportions_1', 'admix_proportions', 'inbr_subpops', 'fam', 'ids', 'kinship') )
     
-    # check admixture proportions matrix
-    check_admix_prop( data$admix_proportions, n_ind, k_subpops )
+    # check admixture proportions matrix of founders
+    check_admix_prop( data$admix_proportions_1, n_ind, k_subpops )
     
     # check inbr_subpops vector
     inbr_subpops <- data$inbr_subpops
@@ -36,15 +36,18 @@ check_sim_pop_data <- function ( data, n_ind, k_subpops, fst, G ) {
     expect_true( min( inbr_subpops ) >= 0 )
     expect_true( max( inbr_subpops ) <= 1 )
     
-    # check kinship
+    # check kinship of last generation (founders if G=1)
     check_kinship( data$kinship, n_ind )
 
+    # check admixture proportions matrix of last generation (founders if G=1)
+    check_admix_prop( data$admix_proportions, n_ind, k_subpops )
+    
+    # check fst, for admixture params of founders
+    admix <- data$admix_proportions_1
+    expect_equal( mean( diag( bnpsd::coanc_admix( admix, inbr_subpops ) ) ), fst )
+    
     # checks dependent on family structure or not
     if ( G == 1 ) {
-        # check fst, must be for admixture only
-        # (if G>1, admix is for descendants and there's sampling variance that changes the value)
-        admix <- data$admix_proportions
-        expect_equal( mean( diag( bnpsd::coanc_admix( admix, inbr_subpops ) ) ), fst )
         # because there's no family structure here, the last two must be null
         expect_true( is.null( data$fam ) )
         expect_true( is.null( data$ids ) )
@@ -210,7 +213,7 @@ test_that( "sim_geno works", {
     k_subpops <- 3
     fst <- 0.3
     G <- 1
-    p_anc_input <- NULL
+    p_anc <- NULL
     expect_silent( 
         data <- sim_pop(
             n_ind = n_ind,
@@ -221,24 +224,24 @@ test_that( "sim_geno works", {
         )
     )
     check_sim_pop_data( data, n_ind, k_subpops, fst, G )
-    admix_proportions <- data$admix_proportions
+    admix_proportions_1 <- data$admix_proportions_1
     inbr_subpops <- data$inbr_subpops
     fam <- data$fam
     ids <- data$ids
     kinship <- data$kinship
     # sim_geno has required params without defaults, check that it dies here only (one time only)
     expect_error( sim_geno() )
-    expect_error( sim_geno( admix_proportions = admix_proportions ) )
+    expect_error( sim_geno( admix_proportions_1 = admix_proportions_1 ) )
     expect_error( sim_geno( inbr_subpops = inbr_subpops ) )
     # now a successful run
     expect_silent (
         data <- sim_geno(
-            admix_proportions,
+            admix_proportions_1,
             inbr_subpops,
             fam = fam,
             ids = ids,
             m_loci = m_loci,
-            p_anc_input = p_anc_input,
+            p_anc = p_anc,
             verbose = FALSE
         )
     )
@@ -246,15 +249,15 @@ test_that( "sim_geno works", {
 
     # change ancestral allele frequencies only
     # this is the only value we've used in practice
-    p_anc_input <- 0.5
+    p_anc <- 0.5
     expect_silent (
         data <- sim_geno(
-            admix_proportions,
+            admix_proportions_1,
             inbr_subpops,
             fam = fam,
             ids = ids,
             m_loci = m_loci,
-            p_anc_input = p_anc_input,
+            p_anc = p_anc,
             verbose = FALSE
         )
     )
@@ -266,7 +269,7 @@ test_that( "sim_geno works", {
     k_subpops <- 3
     fst <- 0.3
     G <- 3
-    p_anc_input <- NULL
+    p_anc <- NULL
     expect_silent( 
         data <- sim_pop(
             n_ind = n_ind,
@@ -277,19 +280,19 @@ test_that( "sim_geno works", {
         )
     )
     check_sim_pop_data( data, n_ind, k_subpops, fst, G )
-    admix_proportions <- data$admix_proportions
+    admix_proportions_1 <- data$admix_proportions_1
     inbr_subpops <- data$inbr_subpops
     fam <- data$fam
     ids <- data$ids
     kinship <- data$kinship
     expect_silent (
         data <- sim_geno(
-            admix_proportions,
+            admix_proportions_1,
             inbr_subpops,
             fam = fam,
             ids = ids,
             m_loci = m_loci,
-            p_anc_input = p_anc_input,
+            p_anc = p_anc,
             verbose = FALSE
         )
     )
@@ -297,15 +300,15 @@ test_that( "sim_geno works", {
 
     # change ancestral allele frequencies only
     # this is the only value we've used in practice
-    p_anc_input <- 0.5
+    p_anc <- 0.5
     expect_silent (
         data <- sim_geno(
-            admix_proportions,
+            admix_proportions_1,
             inbr_subpops,
             fam = fam,
             ids = ids,
             m_loci = m_loci,
-            p_anc_input = p_anc_input,
+            p_anc = p_anc,
             verbose = FALSE
         )
     )
@@ -337,7 +340,7 @@ test_that( "sim_trait_env works", {
     )
     expect_silent (
         data <- sim_geno(
-            data$admix_proportions,
+            data$admix_proportions_1,
             data$inbr_subpops,
             m_loci = m_loci,
             verbose = FALSE

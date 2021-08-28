@@ -1,3 +1,54 @@
+#' Simulate a complex trait
+#'
+#' Mostly a wrapper around [simtrait::sim_trait()], but can optionally add a structured environment effect.
+#' However, in that case the heritability is no longer as specified.
+#'
+#' @param X The genotype matrix.
+#' @param p_anc The vector of ancestral allele frequencies.
+#' @param k_subpops The number of intermediate subpopulations for admixture model.
+#' Used for `env = 'gcat'` only.
+#' @inheritParams sim_gen_phen
+#'
+#' @return A list containing the following elements:
+#' - `trait`: The simulated trait vector.
+#' - `causal_indexes`: The vector of randomly selected causal loci indexes.
+#' - `causal_coeffs`: The vector of simulated regression coefficients for causal loci.
+#'
+#' @examples
+#' # draw population parameters using `sim_pop` first
+#' # a small example
+#' k_subpops <- 3
+#' data <- sim_pop( n_ind = 50, G = 3, k_subpops = k_subpops )
+#'
+#' # then draw genotypes
+#' m_loci <- 100
+#' data2 <- sim_geno(
+#'     data$admix_proportions_1,
+#'     data$inbr_subpops,
+#'     data$fam,
+#'     data$ids
+#' )
+#'
+#' # now draw trait!
+#' m_causal <- 5
+#' herit <- 0.5
+#' data3 <- sim_trait_env(
+#'     data2$X,
+#'     data2$p_anc,
+#'     m_causal,
+#'     herit,
+#'     env = 'gcat',
+#'     k_subpops = k_subpops
+#' )
+#'
+#' # the simulated trait
+#' data3$trait
+#' # indexes of randomly-selected causal loci
+#' data3$causal_indexes
+#' # coefficients of causal loci
+#' data3$causal_coeffs
+#'
+#' @export
 sim_trait_env <- function(
                           X,
                           p_anc,
@@ -5,7 +56,7 @@ sim_trait_env <- function(
                           herit,
                           env = NA,
                           env_var = 1,
-                          k_subpops = NA, # used for env='gcat'
+                          k_subpops = NA,
                           fes = FALSE,
                           verbose = TRUE
                           ) {
