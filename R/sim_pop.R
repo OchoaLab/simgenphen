@@ -18,19 +18,19 @@
 #'
 #' @examples
 #' # a small example
-#' data <- sim_pop( n_ind = 50, G = 3 )
+#' data_pop <- sim_pop( n_ind = 50, G = 3 )
 #' 
 #' # parameters for admixture model of founders
-#' data$admix_proportions_1
-#' data$inbr_subpops
+#' data_pop$admix_proportions_1
+#' data_pop$inbr_subpops
 #' 
 #' # parameters of family structure
-#' data$fam
-#' data$ids
+#' data_pop$fam
+#' data_pop$ids
 #' 
 #' # parameters for final generation
-#' data$admix_proportions
-#' data$kinship
+#' data_pop$admix_proportions
+#' data_pop$kinship
 #' 
 #' @seealso
 #' The `bnpsd` and `simfam` packages.

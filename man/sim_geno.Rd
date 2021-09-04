@@ -49,22 +49,22 @@ This function identifies these fixed loci (using \code{\link[bnpsd:fixed_loci]{b
 \examples{
 # draw population parameters using `sim_pop` first
 # a small example
-data <- sim_pop( n_ind = 50, G = 3 )
+data_pop <- sim_pop( n_ind = 50, G = 3 )
 
 # now draw genotypes!
 m_loci <- 100
-data2 <- sim_geno(
-    data$admix_proportions_1,
-    data$inbr_subpops,
-    data$fam,
-    data$ids,
+data_geno <- sim_geno(
+    data_pop$admix_proportions_1,
+    data_pop$inbr_subpops,
+    data_pop$fam,
+    data_pop$ids,
     m_loci
 )
 
 # genotype matrix
-data2$X
+data_geno$X
 
 # ancestral allele frequencies
-data2$p_anc
+data_geno$p_anc
 
 }

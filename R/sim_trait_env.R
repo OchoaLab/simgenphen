@@ -18,23 +18,23 @@
 #' # draw population parameters using `sim_pop` first
 #' # a small example
 #' k_subpops <- 3
-#' data <- sim_pop( n_ind = 50, G = 3, k_subpops = k_subpops )
+#' data_pop <- sim_pop( n_ind = 50, G = 3, k_subpops = k_subpops )
 #'
 #' # then draw genotypes
 #' m_loci <- 100
-#' data2 <- sim_geno(
-#'     data$admix_proportions_1,
-#'     data$inbr_subpops,
-#'     data$fam,
-#'     data$ids
+#' data_geno <- sim_geno(
+#'     data_pop$admix_proportions_1,
+#'     data_pop$inbr_subpops,
+#'     data_pop$fam,
+#'     data_pop$ids
 #' )
 #'
 #' # now draw trait!
 #' m_causal <- 5
 #' herit <- 0.5
-#' data3 <- sim_trait_env(
-#'     data2$X,
-#'     data2$p_anc,
+#' data_trait <- sim_trait_env(
+#'     data_geno$X,
+#'     data_geno$p_anc,
 #'     m_causal,
 #'     herit,
 #'     env = 'gcat',
@@ -42,11 +42,11 @@
 #' )
 #'
 #' # the simulated trait
-#' data3$trait
+#' data_trait$trait
 #' # indexes of randomly-selected causal loci
-#' data3$causal_indexes
+#' data_trait$causal_indexes
 #' # coefficients of causal loci
-#' data3$causal_coeffs
+#' data_trait$causal_coeffs
 #'
 #' @export
 sim_trait_env <- function(
