@@ -16,7 +16,11 @@
   Bug was very recently introduced (compared to previous non-public code in a separate repository).
 - Function `sim_bim` added parameter `pos_gap`.
 
-# simgenphen 0.0.2.9000  (2021-09-03)
+# simgenphen 0.0.2.9000 (2021-09-03)
 
 - Added package documentation with runnable examples.
 - Also updated examples in individual functions to better match the package entry examples.
+
+# simgenphen 0.0.3.9000 (2021-09-03)
+
+- Added README with examples from package documentation.
