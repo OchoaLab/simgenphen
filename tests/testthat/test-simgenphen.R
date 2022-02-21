@@ -313,6 +313,20 @@ test_that( "sim_geno works", {
         )
     )
     check_sim_geno_data( data, n_ind, m_loci )
+
+    # "beta" version
+    expect_silent (
+        data <- sim_geno(
+            admix_proportions_1,
+            inbr_subpops,
+            fam = fam,
+            ids = ids,
+            m_loci = m_loci,
+            beta = 0.1,
+            verbose = FALSE
+        )
+    )
+    check_sim_geno_data( data, n_ind, m_loci )
 })
 
 test_that( "sim_bim works", {
@@ -421,6 +435,35 @@ test_that( "sim_gen_phen works", {
             k_subpops = k_subpops,
             m_causal = m_causal,
             n_chr = n_chr,
+            verbose = FALSE
+        )
+    )
+    # test overall object
+    expect_true( is.list( data ) )
+    expect_equal( names( data ), c('X', 'bim', 'kinship', 'admix_proportions', 'trait', 'causal_indexes', 'causal_coeffs') )
+    # check X
+    check_geno( data$X, n_ind, m_loci )
+    # check bim
+    check_sim_bim( data$bim, m_loci, n_chr )
+    # check kinship
+    check_kinship( data$kinship, n_ind )
+    # check admixture proportions matrix
+    check_admix_prop( data$admix_proportions, n_ind, k_subpops )
+    # check trait components, simple subset of given data
+    check_sim_trait_env_data(
+        data[ c('trait', 'causal_indexes', 'causal_coeffs') ],
+        n_ind, m_loci, m_causal
+    )
+
+    # "beta" version
+    expect_silent(
+        data <- sim_gen_phen(
+            n_ind = n_ind,
+            m_loci = m_loci,
+            k_subpops = k_subpops,
+            m_causal = m_causal,
+            n_chr = n_chr,
+            beta = 0.1,
             verbose = FALSE
         )
     )

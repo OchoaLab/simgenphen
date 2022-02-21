@@ -20,6 +20,9 @@
 #' If `TRUE`, the Fixed Effect Sizes (FES) model is used instead.
 #' @param n_chr Number of chromosomes to simulate.
 #' Chromosome assignments are not biologically meaningful, as all loci are drawn independently (no LD).
+#' @param beta Shape parameter for a symmetric Beta for ancestral allele frequencies `p_anc`.
+#' If `NA` (default), `p_anc` is uniform with range in \[0.01, 0.5\].
+#' Otherwise, `p_anc` has a symmetric Beta distribution with range in \[0, 1\].
 #' @param verbose If `TRUE` reports progress, otherwise it is silent.
 #'
 #' @return A list containing the following elements:
@@ -61,6 +64,7 @@ sim_gen_phen <- function(
                          env_var = 1,
                          fes = FALSE,
                          n_chr = 22,
+                         beta = NA,
                          verbose = TRUE # to print messages
                          ) {
     # this function is for generating random genotypes from an admixed population with 3 source subpopulations
@@ -99,6 +103,7 @@ sim_gen_phen <- function(
         fam = fam,
         ids = ids,
         m_loci = m_loci,
+        beta = beta,
         verbose = verbose
     )
     X <- obj$X

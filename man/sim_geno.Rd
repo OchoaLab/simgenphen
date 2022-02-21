@@ -11,6 +11,7 @@ sim_geno(
   ids = NULL,
   m_loci = 1e+05,
   p_anc = NULL,
+  beta = NA,
   verbose = TRUE
 )
 }
@@ -28,6 +29,11 @@ Ignored if \code{fam} is \code{NULL}.}
 
 \item{p_anc}{The desired ancestral allele frequencies (scalar or length-\code{m_loci} vector passed to \code{\link[bnpsd:draw_all_admix]{bnpsd::draw_all_admix()}}).
 By default (\code{NULL}), ancestral allele frequencies are drawn randomly.}
+
+\item{beta}{Shape parameter for a symmetric Beta for ancestral allele frequencies \code{p_anc}.
+If \code{NA} (default), \code{p_anc} is uniform with range in [0.01, 0.5].
+Otherwise, \code{p_anc} has a symmetric Beta distribution with range in [0, 1].
+Has no effect if \code{p_anc} option is non-\code{NULL}.}
 
 \item{verbose}{If \code{TRUE} reports progress, otherwise it is silent.}
 }

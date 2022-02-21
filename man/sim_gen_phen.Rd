@@ -17,6 +17,7 @@ sim_gen_phen(
   env_var = 1,
   fes = FALSE,
   n_chr = 22,
+  beta = NA,
   verbose = TRUE
 )
 }
@@ -50,6 +51,10 @@ If \code{TRUE}, the Fixed Effect Sizes (FES) model is used instead.}
 
 \item{n_chr}{Number of chromosomes to simulate.
 Chromosome assignments are not biologically meaningful, as all loci are drawn independently (no LD).}
+
+\item{beta}{Shape parameter for a symmetric Beta for ancestral allele frequencies \code{p_anc}.
+If \code{NA} (default), \code{p_anc} is uniform with range in [0.01, 0.5].
+Otherwise, \code{p_anc} has a symmetric Beta distribution with range in [0, 1].}
 
 \item{verbose}{If \code{TRUE} reports progress, otherwise it is silent.}
 }

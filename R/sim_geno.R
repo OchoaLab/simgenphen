@@ -14,6 +14,10 @@
 #' Ignored if `fam` is `NULL`.
 #' @param p_anc The desired ancestral allele frequencies (scalar or length-`m_loci` vector passed to [bnpsd::draw_all_admix()]).
 #' By default (`NULL`), ancestral allele frequencies are drawn randomly.
+#' @param beta Shape parameter for a symmetric Beta for ancestral allele frequencies `p_anc`.
+#' If `NA` (default), `p_anc` is uniform with range in \[0.01, 0.5\].
+#' Otherwise, `p_anc` has a symmetric Beta distribution with range in \[0, 1\].
+#' Has no effect if `p_anc` option is non-`NULL`.
 #' @inheritParams sim_gen_phen
 #'
 #' @return A list containing the following elements:
@@ -49,6 +53,7 @@ sim_geno <- function(
                      ids = NULL,
                      m_loci = 100000,
                      p_anc = NULL,
+                     beta = NA,
                      verbose = TRUE
                      ) {
     if ( missing( admix_proportions_1 ) )
@@ -62,7 +67,7 @@ sim_geno <- function(
     # draw allele freqs and genotypes
     if (verbose)
         message('draw_all_admix')
-    out <- bnpsd::draw_all_admix(admix_proportions_1, inbr_subpops, m_loci, p_anc = p_anc_input)
+    out <- bnpsd::draw_all_admix(admix_proportions_1, inbr_subpops, m_loci, beta = beta, p_anc = p_anc_input)
     X <- out$X # genotypes
     p_anc <- out$p_anc # ancestral AFs
 
@@ -86,8 +91,14 @@ sim_geno <- function(
         fixed_loci_indexes <- bnpsd::fixed_loci(X)
         m_loci_fixed <- sum( fixed_loci_indexes )
         while (m_loci_fixed > 0) { # draw things anew, over and over until nothing was fixed
+            # decide how to handle ancestral allele frequencies
+            # this is most common case, ok if input was NULL or scalar
+            p_anc_input_fixed <- p_anc_input
+            # if passed a vector, subset this way to redraw exactly those loci with the same starting allele frequencies as before
+            if ( !is.null( p_anc_input ) && length( p_anc_input ) > 1 )
+                p_anc_input_fixed <- p_anc_input[ fixed_loci_indexes ]
             # draw allele freqs and genotypes
-            out <- bnpsd::draw_all_admix(admix_proportions_1, inbr_subpops, m_loci_fixed)
+            out <- bnpsd::draw_all_admix(admix_proportions_1, inbr_subpops, m_loci_fixed, beta = beta, p_anc = p_anc_input_fixed)
             # overwrite fixed loci with redrawn polymorphic data
             #            X[fixed_loci_indexes, ] <- out$X # genotypes
             p_anc[fixed_loci_indexes] <- out$p_anc # ancestral AFs

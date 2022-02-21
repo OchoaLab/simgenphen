@@ -24,3 +24,8 @@
 # simgenphen 0.0.3.9000 (2021-09-03)
 
 - Added README with examples from package documentation.
+
+# simgenphen 0.0.4.9000 (2022-02-21)
+
+- Function `sim_geno` fixed a bug that fixed loci were redrawn without respecting `p_anc` if provided (no bug for `p_anc = NULL`).
+- Functions `sim_geno` and `sim_gen_phen` added option `beta` for a Beta distribution for ancestral allele frequencies.
