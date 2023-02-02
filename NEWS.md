@@ -29,3 +29,8 @@
 
 - Function `sim_geno` fixed a bug that fixed loci were redrawn without respecting `p_anc` if provided (no bug for `p_anc = NULL`).
 - Functions `sim_geno` and `sim_gen_phen` added option `beta` for a Beta distribution for ancestral allele frequencies.
+
+# simgenphen 0.0.5.9000 (2023-02-01)
+
+- Function `sim_gen_phen` added element `p_anc` to return list, needed in order to reuse the simulated genotypes to simulate new traits for them (for example, with different heritabilities).
+- Updated unit tests for function `sim_bim` to expect column `alt` before `ref` in return tibble (a change inherited from dependency `genio::make_bim()` made in `genio` version 1.1.0.9000 (2022-04-20))

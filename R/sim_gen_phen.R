@@ -28,6 +28,7 @@
 #' @return A list containing the following elements:
 #' - `X`: The simulated genotype matrix.
 #' - `bim`: The variant info table.
+#' - `p_anc`: The ancestral allele frequency vector (aligned with rows of `X`).
 #' - `kinship`: The true kinship of the joint admixed family model (final generation only).
 #' - `admix_proportions`: The true admixture proportions of the joint admixed family model (final generation only).
 #' - `trait`: The simulated trait vector.
@@ -140,12 +141,13 @@ sim_gen_phen <- function(
 
     # return a few items of interest
     # NOTES:
-    # - inbr_subpops, p_anc also not used outside
+    # - inbr_subpops not used outside
     # - could return fam/ids, don't right now
     return(
         list(
             X = X, # genotype matrix
             bim = bim,
+            p_anc = p_anc,
             kinship = kinship, # kinship matrix of last generation (founders if G=1)
             admix_proportions = admix_proportions, # admixture proportions of last generation (founders if G=1)
             trait = trait, # trait vector

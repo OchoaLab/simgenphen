@@ -63,6 +63,7 @@ A list containing the following elements:
 \itemize{
 \item \code{X}: The simulated genotype matrix.
 \item \code{bim}: The variant info table.
+\item \code{p_anc}: The ancestral allele frequency vector (aligned with rows of \code{X}).
 \item \code{kinship}: The true kinship of the joint admixed family model (final generation only).
 \item \code{admix_proportions}: The true admixture proportions of the joint admixed family model (final generation only).
 \item \code{trait}: The simulated trait vector.

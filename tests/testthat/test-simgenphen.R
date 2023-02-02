@@ -77,6 +77,13 @@ check_geno <- function( X, n_ind, m_loci ) {
     expect_true( max( x_bar ) < 2 )
 }
 
+check_p_anc <- function( p_anc, m_loci ) {
+    expect_true( is.numeric( p_anc ) )
+    expect_equal( length( p_anc ), m_loci )
+    expect_true( min( p_anc ) >= 0 )
+    expect_true( max( p_anc ) <= 1 )
+}
+
 check_sim_geno_data <- function( data, n_ind, m_loci ) {
     # check overall object
     expect_true( is.list( data ) )
@@ -86,17 +93,13 @@ check_sim_geno_data <- function( data, n_ind, m_loci ) {
     check_geno( data$X, n_ind, m_loci )
     
     # check p_anc
-    p_anc <- data$p_anc
-    expect_true( is.numeric( p_anc ) )
-    expect_equal( length( p_anc ), m_loci )
-    expect_true( min( p_anc ) >= 0 )
-    expect_true( max( p_anc ) <= 1 )
+    check_p_anc( data$p_anc, m_loci )
 }
 
 check_sim_bim <- function( bim, m_loci, n_chr ) {
     # validate output
     expect_true( is.data.frame( bim ) )
-    expect_equal( names( bim ), c('chr', 'id', 'posg', 'pos', 'ref', 'alt') )
+    expect_equal( names( bim ), c('chr', 'id', 'posg', 'pos', 'alt', 'ref') )
     expect_equal( nrow( bim ), m_loci )
     # validate main non-trivial feature, that there are various chromosomes!
     expect_true( all( bim$chr %in% 1 : n_chr ) )
@@ -440,11 +443,13 @@ test_that( "sim_gen_phen works", {
     )
     # test overall object
     expect_true( is.list( data ) )
-    expect_equal( names( data ), c('X', 'bim', 'kinship', 'admix_proportions', 'trait', 'causal_indexes', 'causal_coeffs') )
+    expect_equal( names( data ), c('X', 'bim', 'p_anc', 'kinship', 'admix_proportions', 'trait', 'causal_indexes', 'causal_coeffs') )
     # check X
     check_geno( data$X, n_ind, m_loci )
     # check bim
     check_sim_bim( data$bim, m_loci, n_chr )
+    # check p_anc
+    check_p_anc( data$p_anc, m_loci )
     # check kinship
     check_kinship( data$kinship, n_ind )
     # check admixture proportions matrix
@@ -469,11 +474,13 @@ test_that( "sim_gen_phen works", {
     )
     # test overall object
     expect_true( is.list( data ) )
-    expect_equal( names( data ), c('X', 'bim', 'kinship', 'admix_proportions', 'trait', 'causal_indexes', 'causal_coeffs') )
+    expect_equal( names( data ), c('X', 'bim', 'p_anc', 'kinship', 'admix_proportions', 'trait', 'causal_indexes', 'causal_coeffs') )
     # check X
     check_geno( data$X, n_ind, m_loci )
     # check bim
     check_sim_bim( data$bim, m_loci, n_chr )
+    # check p_anc
+    check_p_anc( data$p_anc, m_loci )
     # check kinship
     check_kinship( data$kinship, n_ind )
     # check admixture proportions matrix
